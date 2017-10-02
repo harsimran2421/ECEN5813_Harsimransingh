@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-void print_memory(uint8_t *start, uint32_t length);
-=======
 /********************************************
  * *   Authors: Harsimransingh Bindra, Smitesh Modak
  * *   Date Edited: 10/01/2017
@@ -18,4 +15,3 @@ void print_memory(uint8_t *start, uint32_t length);
 #define DEBUG_H_
 void print_memory(uint8_t *start, uint32_t length);   //Function to print data present at the given memory location
 #endif
->>>>>>> Changes in header file

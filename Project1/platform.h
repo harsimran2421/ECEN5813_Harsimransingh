@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 /********************************************
  * *   Authors: Harsimransingh Bindra, Smitesh Modak
  * *   Date Edited: 10/01/2017
@@ -13,12 +11,8 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
->>>>>>> Changes in header file
 #ifdef KL25z
 #define printf(uint32_t) 0
 #define print_memory(uint32_t ) 0
 #endif
-<<<<<<< HEAD
-=======
 #endif
->>>>>>> Changes in header file
