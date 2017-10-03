@@ -48,7 +48,18 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS) $(DEP)
 	$(CC) $(OBJS) $(CFLAGS) -o $@ $(LDFLAGS)
+	size -d $(TARGET)
+
+compile-all: $(OBJS) 
+	$(CC) $(CPPFLAGS) $^ $(CFLAGS)
+
+static-link: main.o libproject1.a
+	$(CC) $(CPPFLAGS) -o $@ main.o libproject1.a
+
+build-lib: memory.o conversion.o project1.o
+	ar rcs libproject1.a $^
 .PHONY: clean
+
 clean:
 	rm -f $(OBJS) $(TARGET) $(DEP) $(PROG).map *.i *.s
 	 

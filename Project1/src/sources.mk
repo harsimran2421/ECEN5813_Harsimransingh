@@ -4,6 +4,9 @@ SRCS = main.c \
        conversion.c \
        debug.c \
 
+LIBR = memory.c \
+			 conversion.c\
+
 INCLUDE_H = ../includes/common/
 INCLUDE_H_FF = ../includes/kl25z/
 INCLUDE_H_FF1 = ../includes/CMSIS/
