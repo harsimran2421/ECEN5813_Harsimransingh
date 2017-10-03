@@ -12,7 +12,7 @@
 #define PLATFORM_H_
 
 #ifdef KL25z
-#define printf(uint32_t) 0
-#define print_memory(uint32_t ) 0
+#define printf(uint32_t) 0          //this statement is used to disable printf functions
+#define print_memory(uint32_t ) 0   // This statement is used to disable the print_memory function
 #endif
 #endif

@@ -13,5 +13,12 @@
 
 #ifndef DEBUG_H_
 #define DEBUG_H_
-void print_memory(uint8_t *start, uint32_t length);   //Function to print data present at the given memory location
+void print_memory(uint8_t *start, uint32_t length);   
+/**
+ * Function to print data present at the given memory location
+ *
+ * This function prints the data from the memory location to where the start pointer is pointing to
+ * This function is used for debugging 
+ *
+ * returns void*/
 #endif
