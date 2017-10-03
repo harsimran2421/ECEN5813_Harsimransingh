@@ -3,54 +3,49 @@
 #target: Dependencies
 #	action
 
+include sources.mk
+
 ifeq ($(PLATFORM),HOST)
 	CC = gcc
-	CFLAGS = -c
-	LDFLAGS = $(CC) -o
-	CPPFLAGS = -Wall -Werror -g - O0 -std=c99
-	OBJS = main.o project1.o memory.o conversion.o debug.o 
-	PROG = main
-else
-ifeq ($(PLATFROM,BBB)
+	LD = -ld
+	PROG = project1
+	TARGET = $(PROG).elf
+	CFLAGS = -Wall -Werror
+	LDFLAGS = -Wl,-Map=$(PROG).map
+endif
+
+ifeq ($(PLATFROM),BBB)
 	CC = arm-linux-gnueabhihf-gcc
-	CFLAGS = -c
-	LDFLAGS = $(CC) -o
-	CPPFLAGS = -Wall -Werror -g - O0 -std=c99
-	OBJS = main.o project1.o memory.o conversion.o debug.o
-	PROG = main
-else 
+	LD = arm-linux-gnueabhihf-ld
+	PROG = project1
+	TARGET = $(PROG).elf
+	CFLAGS = -Wall -Werror -g -O0 -std=c99
+	LDFLAGS = -Wl,-Map=$(PROG).map
+endif 
+
 ifeq ($(PLATFORM),KL25Z)
-	cc = arm-none-eabi-gcc
-	CFLAGS = -c
-	LDFLAGS = $(CC) -o
-	CPPFLAGS = -Wall -Werror -g - O0 -std=c99 -mcpu=?? \
-		   -mthumb -march=?? -mfloat-abi=?? \
-		   -mfpu=fpv4-sp-d16 --specs=nosys.specs
-	OBJS = main.o project1.o memory.o conversion.o debug.o
-	PROG = main	
-endif
-endif
+	CC = arm-linux-gnueabhihf-gcc
+        LD = arm-linux-gnueabhihf-ld
+        PROG = project1
+        TARGET = $(PROG).elf
+        CFLAGS = -Wall -Werror -g -O0 -std=c99
+        LDFLAGS = -Wl,-Map=$(PROG).map	
 endif
 
-all: $(PROG)
+OBJS = $(SRCS:.c=.o)
 
-main: $(OBJS)
-	$(LDFLAGS) $(PROG) $(OBJS)
+%.o : %.c 
+	$(CC) -c -DPROJECT1 $< $(CFLAGS) -o $@
 
-main.o: main.c
-	$(CC) $(CFLAGS) main.c -DPROJECT1
+.PHONY: all
+build: all
+.PHONY: all
+all: $(TARGET)
 
-project1.o: project1.c
-	$(CC) $(CFLAGS) project1.c
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) $(CFLAGS) -o $@
 
-memory.o: memory.c
-	$(CC) $(CFLAGS) memory.c
-
-conversion.o: conversion.c
-	$(CC) $(CFLAGS) conversion.c
-
-debug.o: debug.c
-	$(CC) $(CFLAGS) debug.c
-
+.PHONY: clean
 clean:
-	rm $(OBS)
+	rm -f $(OBJS) $(TARGET) $(TARGET).map 
+	 
