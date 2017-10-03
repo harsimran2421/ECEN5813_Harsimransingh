@@ -30,8 +30,7 @@ uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base)  //function to conver
 		count++;
 		sign++;					                                          //to check the sign of the input
 	}
-  printf("%d\n",data);
-	if(data==0)
+  if(data==0)
 	{						                                                //to return zero  value if zero is entered
 		*ptr='0';
 		return 0;
@@ -52,8 +51,7 @@ uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base)  //function to conver
 		}
   *ptr = '\0';
   last = ptr-sizeof(uint8_t);
-  printf("%c\n",*ptr);
-  digits = count;
+    digits = count;
 if(sign ==1)
 {
 	ptr = ptr - sizeof(uint8_t)*(count-1);
