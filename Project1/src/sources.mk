@@ -1,11 +1,13 @@
 SRCS = main.c \
-       project1.c \
+       project1.c\
        memory.c \
-       conversion.c \
        debug.c \
+       conversion.c
+
+SRC_K = system_MKL25Z4.c
 
 LIBR = memory.c \
-       conversion.c\
+       conversion.c
 
 INCLUDE_H = ../includes/common/
 INCLUDE_H_FF = ../includes/kl25z/
