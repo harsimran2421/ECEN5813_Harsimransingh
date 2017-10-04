@@ -2,7 +2,7 @@
 
 #target: Dependencies
 #	action
-
+PLATFORM = HOST
 include sources.mk
 PROG = project1
 TARGET = $(PROG).elf
@@ -53,8 +53,8 @@ $(TARGET): $(OBJS) $(DEP)
 compile-all: $(OBJS) 
 	$(CC) $(CPPFLAGS) $^ $(CFLAGS)
 
-static-link: main.o libproject1.a
-	$(CC) $(CPPFLAGS) -o $@ main.o libproject1.a
+static-link: main.o libproject1
+	$(CC) $(CPPFLAGS) -o $@ main.o libproject1
 
 build-lib: memory.o conversion.o project1.o
 	ar rcs libproject1.a $^

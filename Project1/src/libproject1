@@ -1,0 +1,670 @@
+!<arch>
+memory.c/       0           0     0     644     3240      `
+/********************************************
+ * *   Authors: Harsimransingh Bindra, Smitesh Modak
+ * *   Date Edited: 10/01/2017
+ * *
+ * *   File: memory.c
+ * *
+ * *   Description: source file for data manipulation 
+ * *    -cal_length
+ * *    -my_memmove
+ * *    -my_memcpy
+ * *    -my_memset
+ * *    -my_memzero
+ * *    -my_reverse
+ * *    -reserve_words
+ * *    -free_words
+ * *
+ * *
+ * ********************************************************/
+
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+/*uint8_t cal_length(uint8_t *ptr)                              //function to calculate the length of the string
+{
+	uint8_t count = 0;
+	while(*ptr != '\0')
+	{
+		count++;
+		ptr++;
+	}
+	return count;
+}*/
+
+uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length) //function to move data from one memory location to another
+{
+	uint8_t i = 0;
+  uint8_t *temp = dst;
+	if((src+sizeof(uint8_t)*length)>=dst && src<dst)            //Checks for overlapping of memory location
+	{
+   src =  src+(sizeof(uint8_t)*(length-1));
+   dst =  dst+(sizeof(uint8_t)*(length-1));
+	for(i = 0; i<length; i++)                                   //to move data to the destination memory location
+	{
+		*dst = *src;
+		src--;
+		dst--;
+  }
+  return temp;
+  }
+  else
+  {
+	for(i = 0; i<length; i++)
+	{
+		*dst = *src;
+		src++;
+		dst++;
+	}
+  }           
+  return temp;
+}
+
+uint8_t *my_memcpy(uint8_t *src, uint8_t *dst, size_t length)  //function to copy data from one memory location to another
+{
+	uint8_t i = 0;
+  uint8_t *temp = dst;
+	for(i = 0; i<length; i++)                                   //to copy data from source memory address to destination memory location
+	{
+		*dst = *src;
+		src++;
+		dst++;
+	}
+	return temp;
+}
+
+uint8_t *my_memset(uint8_t *src, size_t length, uint8_t value)//to set all given memory locations with a particular value
+{	size_t i = length;
+	while(i != 0)                                               //to set a particular value
+	{
+		*src = value;
+		i--;
+		src++;
+	}
+	src = src-(sizeof(uint8_t)*length);
+	return src;
+
+}
+
+uint8_t *my_memzero(uint8_t *src, size_t length)             //function to set all values at given memory locations to zero
+{	size_t i = length;
+	while(i != 0)
+	{
+		*src = 0;                                                //sets all values to zero
+		i--;
+		src++;
+	}
+	src = src-(sizeof(uint8_t)*length);
+	return src;
+}
+
+uint8_t *my_reverse(uint8_t *src, size_t length)            //function to reverse a string
+{	uint8_t *last;
+	uint8_t temp,i;
+	last = src + sizeof(uint8_t)*length-1;
+	if(length%2 != 0)                                         //to check whether the length of the string or number of values are even or odd
+	{
+		length = length-1;
+	}
+	for(i = 0; i<(length/2); i++)                             //to reverse the string at given memory location
+	{
+		temp = *src;
+		*src = *last;
+		*last = temp;
+		src++;
+		last--;
+	}
+	src = src - (sizeof(uint8_t)*(length/2));
+	return src;
+}
+
+uint32_t *reserve_words(size_t length)                    //function to dynamically allocate memory
+{
+uint32_t *reserve = malloc(sizeof(uint32_t)*length);
+return reserve;
+}
+
+void free_words(uint32_t *src)                            //function to free the dynamically allocated memory
+{
+  free(src);
+}
+conversion.c/   0           0     0     644     4158      `
+/********************************************
+ * *   Authors: Harsimransingh Bindra, Smitesh Modak
+ * *   Date Edited: 10/01/2017
+ * *
+ * *   File: conversion.c
+ * *
+ * *   Description: source file for data manipulation 
+ * *     -my_itoa
+ * *     -my_atoi
+ * *     -dump_memory
+ * *     -big_to_little32
+ * *     -little_to_big32
+ * *
+ * *
+ * ********************************************************/
+
+#include <stdint.h>
+#include <stdio.h>
+#include "conversion.h"                                     //invokes user defined header file for conversion
+uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base)  //function to convert integers to ascii strings
+{	
+	uint8_t rem, i, temp, digits, count = 0;
+  uint8_t sign = 0;
+	uint8_t *last;
+	if(data<0)                                                //checks if data is negative and appends - to the string
+	{ 
+  	data = -data;
+		*ptr = '-';
+		ptr++;
+		count++;
+		sign++;					                                          //to check the sign of the input
+	}
+  if(data==0)
+	{						                                                //to return zero  value if zero is entered
+		*ptr='0';
+		return 0;
+	}	
+	while(data != 0)
+	{
+		if((rem = data%base) > 9)                                 //condition if there is hex conversion
+		{
+			*ptr=('A'+ rem-10);                                     //adds the ascii value of 'A' character to remainder
+		}
+		else
+		{
+			*ptr=rem + '0';                                        //for normal conversion adds the ascii value of '0' to the remainder
+		}
+		data = data/base;
+		ptr++;
+		count++;
+		}
+  *ptr = '\0';
+  last = ptr-sizeof(uint8_t);
+    digits = count;
+if(sign ==1)
+{
+	ptr = ptr - sizeof(uint8_t)*(count-1);
+}
+else
+{
+	ptr = ptr - sizeof(uint8_t)*(count);
+}
+if(count%2 !=0)                                             //to check the string length whether its even or odd
+{
+	count =count-1;
+}
+for(i=0; i<(count/2); i++)                                  //to reverse the string and store the ascii string in correct order
+{
+	temp = *last;
+	*last = *ptr;
+	*ptr = temp;
+	ptr++;
+	last--;
+}
+ptr = ptr - sizeof(uint8_t)*(count/2);
+return digits;
+}
+
+int32_t my_atoi(uint8_t *ptr, uint8_t digits, uint32_t base)//function to convert ascii strings to integers
+{
+	int32_t integer=0;
+	uint8_t i, sign=0;
+	if(*ptr == '-')                                           //to check whether the first character is '-' and set the sign bit accordingly
+	{
+    sign++;
+		ptr++;
+    digits = digits-1;
+	}
+	for(i = 0; i<digits; i++)                                 //to convert ascii strings to integers
+	{	
+		if('0' <= *ptr && *ptr <='9')
+		{
+			integer = integer*base + *ptr - '0';                  //subtracts the 
+			ptr++;
+		}
+		else
+		{
+			integer = integer*base + *ptr -55;
+			ptr++;
+		}
+	}
+	if (sign == 1)                                           // to assign the proper sign to the integer according to the sign value
+	{
+		integer = -integer;
+	}
+	return integer;
+}
+
+int8_t big_to_little32(uint32_t *data, uint32_t length)   //to change the endianness from big to little
+{	
+	uint32_t temp, temp1, temp2, temp3;
+	temp = *data & 0XFF000000;                              //masking all but msbs
+	temp1 = *data & 0X000000FF;                            
+	temp2 = *data & 0X00FF0000;
+	temp3 = *data & 0X0000FF00;
+	temp = temp >> 24;                                      //shifting msb to lsb
+	temp1 = temp1<<24;
+	temp2 = temp2>>8;
+	temp3 = temp3<<8;
+	*data = temp | temp1 | temp2 | temp3;                   //assembles all bytes after proper shifting and getting the required endianness
+  return 0;
+}
+
+int8_t little_to_big32(uint32_t *data, uint32_t length)   //to change the endianness from little to big
+{
+
+	uint32_t temp, temp1, temp2, temp3;       
+	temp = *data & 0XFF000000;                              //masking the lsb
+	temp1 = *data & 0X000000FF;
+	temp2 = *data & 0X00FF0000;
+	temp3 = *data & 0X0000FF00;
+	temp = temp >> 24;                                      //shifting the lsb
+	temp1 = temp1<<24;
+	temp2 = temp2>>8;
+	temp3 = temp3<<8;
+	*data = temp | temp1 | temp2 | temp3;                   //assembles all the bytes after proper shifting to get the required endianness
+  return 0;
+}
+
+project1.c/     0           0     0     644     8629      `
+/******************************************************************************
+ * Copyright (C) 2017 by Alex Fosdick - University of Colorado
+ *
+ * Redistribution, modification or use of this software in source or binary
+ * forms is permitted as long as the files maintain this copyright. Users are 
+ * permitted to modify this and use it to learn about the field of embedded
+ * software. Alex Fosdick and the University of Colorado are not liable for any
+ * misuse of this material. 
+ *
+ *****************************************************************************/
+/**
+ * @file project1_test.c 
+ * @brief This file is to be used to project 1.
+ *
+ * @author Alex Fosdick
+ * @date April 2, 2017
+ *
+ */
+#include <stdio.h>
+#include <stdint.h>
+#include "platform.h"
+#include "project1.h"
+#include "memory.h"
+#include "conversion.h"
+#include "debug.h"
+  int8_t test_data1() {
+  uint8_t * ptr;
+  int32_t num = -4096;
+  uint32_t digits;
+  int32_t value;
+
+  printf("\ntest_data1();\n");
+  ptr = (uint8_t*) reserve_words( DATA_SET_SIZE_W );
+
+  if (! ptr )
+  {
+    return TEST_ERROR;
+  }
+  digits = my_itoa( num, ptr, BASE_16);
+  value = my_atoi( ptr, digits, BASE_16);
+  #ifdef VERBOSE
+  	printf("  Initial number: %d\n", num);  
+  	printf("  Final Decimal number: %d\n", value);  
+  #endif
+  free_words( (uint32_t*)ptr );
+
+  if ( value != num )
+  {
+    return TEST_ERROR;
+  }
+  return TEST_NO_ERROR;
+}
+
+int8_t test_data2() {
+  uint8_t * ptr;
+  int32_t num = 123456;
+  uint32_t digits;
+  int32_t value;
+
+  printf("test_data2();\n");
+  ptr = (uint8_t*) reserve_words( DATA_SET_SIZE_W );
+
+  if (! ptr )
+  {
+    return TEST_ERROR;
+  }
+
+  digits = my_itoa( num, ptr, BASE_10);
+  value = my_atoi( ptr, digits, BASE_10);
+  #ifdef VERBOSE
+  	printf("  Initial Decimal number: %d\n", num);  
+  	printf("  Final Decimal number: %d\n", value);  
+  #endif
+  free_words( (uint32_t*)ptr );
+
+  if ( value != num )
+  {
+    return TEST_ERROR;
+  }
+  return TEST_NO_ERROR;
+}
+
+int8_t test_memmove1() {
+  uint8_t i;
+  int8_t ret = TEST_NO_ERROR;
+  uint8_t * set;
+  uint8_t * ptra;
+  uint8_t * ptrb;
+
+  printf("test_memmove1() - NO OVERLAP\n");
+  set = (uint8_t*) reserve_words( MEM_SET_SIZE_W );
+  if (! set ) 
+  {
+    return TEST_ERROR;
+  }
+  
+  ptra = &set[0];
+  ptrb = &set[16];
+  
+  /* Initialize the set to test values */
+  for( i = 0; i < MEM_SET_SIZE_B; i++)
+  {
+    set[i] = i;
+    printf("%d ", set[i]);
+  }
+  printf("\n");
+  my_memmove(ptra, ptrb, TEST_MEMMOVE_LENGTH);
+  for( i = 0; i < MEM_SET_SIZE_B; i++)
+  {
+   printf("%d ", set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+  for (i = 0; i < TEST_MEMMOVE_LENGTH; i++)
+  {
+    if (set[i + 16] != i)
+    {
+      ret = TEST_ERROR;
+    }
+  }
+  free_words( (uint32_t*)set );
+  return ret;
+}
+
+int8_t test_memmove2() {
+  uint8_t i;
+  int8_t ret = TEST_NO_ERROR;
+  uint8_t * set;
+  uint8_t * ptra;
+  uint8_t * ptrb;
+
+  printf("test_memmove2() -OVERLAP END OF SRC BEGINNING OF DST\n");
+  set = (uint8_t*) reserve_words(MEM_SET_SIZE_W);
+
+  if (! set )
+  {
+    return TEST_ERROR;
+  }
+  ptra = &set[0];
+  ptrb = &set[8];
+
+  /* Initialize the set to test values */
+  for( i = 0; i < MEM_SET_SIZE_B; i++) {
+    set[i] = i;
+    printf("%d ",set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+  my_memmove(ptra, ptrb, TEST_MEMMOVE_LENGTH);
+  for( i = 0; i < MEM_SET_SIZE_B; i++)
+  {
+    printf("%d ", set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+
+  for (i = 0; i < TEST_MEMMOVE_LENGTH; i++)
+  {
+    if (set[i + 8] != i)
+    {
+      ret = TEST_ERROR;
+    }
+  }
+
+  free_words( (uint32_t*)set );
+  return ret;
+}
+
+int8_t test_memmove3() {
+  uint8_t i;
+  int8_t ret = TEST_NO_ERROR;
+  uint8_t * set;
+  uint8_t * ptra;
+  uint8_t * ptrb;
+
+  printf("test_memove3() - OVERLAP END OF DEST BEGINNING OF SRC\n");
+  set = (uint8_t*)reserve_words( MEM_SET_SIZE_W);
+
+  if (! set ) 
+  {
+    return TEST_ERROR;
+  }
+  ptra = &set[8];
+  ptrb = &set[0];
+
+  /* Initialize the set to test values */
+  for( i = 0; i < MEM_SET_SIZE_B; i++)
+  {
+    set[i] = i;
+    printf("%d ",set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+  my_memmove(ptra, ptrb, TEST_MEMMOVE_LENGTH);
+  for( i = 0; i < MEM_SET_SIZE_B; i++)
+  {
+    printf("%d ", set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+
+  for (i = 0; i < TEST_MEMMOVE_LENGTH; i++)
+  {
+    if (set[i] != (i + 8))
+    {
+      ret = TEST_ERROR;
+    }
+  }
+
+
+  free_words( (uint32_t*)set);
+  return ret;
+
+}
+
+int8_t test_memcpy() {
+  uint8_t i;
+  int8_t ret = TEST_NO_ERROR;
+  uint8_t * set;
+  uint8_t * ptra;
+  uint8_t * ptrb;
+
+  printf("test_memcpy()\n");
+  set = (uint8_t*) reserve_words(MEM_SET_SIZE_W);
+
+  if (! set ) 
+  {
+    return TEST_ERROR;
+  }
+  ptra = &set[0];
+  ptrb = &set[16];
+
+  /* Initialize the set to test values */
+  for( i = 0; i < MEM_SET_SIZE_B; i++) {
+    set[i] = i;
+    printf("%d ",set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+  my_memcpy(ptra, ptrb, TEST_MEMMOVE_LENGTH);
+  //print_array(set, MEM_SET_SIZE_B);
+  for( i = 0; i < MEM_SET_SIZE_B; i++) {
+        printf("%d ",set[i]);
+  } 
+  printf("\n");
+  for (i = 0; i < TEST_MEMMOVE_LENGTH; i++)
+  {
+    if (set[i+16] != i)
+    {
+      ret = TEST_ERROR;
+    }
+  }
+
+  free_words( (uint32_t*)set );
+  return ret;
+}
+
+int8_t test_memset() 
+{
+  uint8_t i;
+  uint8_t ret = TEST_NO_ERROR;
+  uint8_t * set;
+  uint8_t * ptra;
+  uint8_t * ptrb;
+
+  printf("test_memset()\n");
+  set = (uint8_t*)reserve_words(MEM_SET_SIZE_W);
+  if (! set )
+  {
+    return TEST_ERROR;
+  }
+  ptra = &set[0];
+  ptrb = &set[16];
+
+  /* Initialize the set to test values */
+  for( i = 0; i < MEM_SET_SIZE_B; i++) 
+  {
+    set[i] = i;
+    printf("%d ", set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+  my_memset(ptra, MEM_SET_SIZE_B, 0xFF);
+  for( i = 0; i < MEM_SET_SIZE_B; i++) 
+  {
+    printf("%d ", set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+  my_memzero(ptrb, MEM_ZERO_LENGTH);
+  //print_array(set, MEM_SET_SIZE_B);
+  for( i = 0; i < MEM_SET_SIZE_B; i++) 
+  {
+    printf("%d ", set[i]);
+  }
+  printf("\n");
+  /* Validate Set & Zero Functionality */
+  for (i = 0; i < MEM_ZERO_LENGTH; i++)
+  {
+    if (set[i] != 0xFF)
+    {
+      ret = TEST_ERROR;
+    }
+    if (set[16 + i] != 0)
+    {
+      ret = TEST_ERROR;
+    }
+  }
+  
+  free_words( (uint32_t*)set );
+  return ret;
+}
+
+int8_t test_reverse()
+{
+  uint8_t i;
+  int8_t ret = TEST_NO_ERROR;
+  uint8_t * copy;
+  uint8_t set[MEM_SET_SIZE_B] = {0x3F, 0x73, 0x72, 0x33, 0x54, 0x43, 0x72, 0x26,
+                                 0x48, 0x63, 0x20, 0x66, 0x6F, 0x00, 0x20, 0x33,
+                                 0x72, 0x75, 0x74, 0x78, 0x21, 0x4D, 0x20, 0x40,
+                                 0x20, 0x24, 0x7C, 0x20, 0x24, 0x69, 0x68, 0x54
+                               };
+
+  printf("test_reverse()\n");
+  copy = (uint8_t*)reserve_words(MEM_SET_SIZE_W);
+  if (! copy )
+  {
+    return TEST_ERROR;
+  }
+  
+  my_memcpy(set, copy, MEM_SET_SIZE_B);
+  for(i = 0; i<MEM_SET_SIZE_B; i++)
+  {
+    printf("%X ",set[i]);
+  }
+  printf("\n");
+  //print_array(set, MEM_SET_SIZE_B);
+  my_reverse(set, MEM_SET_SIZE_B);
+  //print_array(set, MEM_SET_SIZE_B);
+  for(i = 0; i<MEM_SET_SIZE_B; i++)
+  {
+    printf("%X ",set[i]);
+  }
+  printf("\n");
+  for (i = 0; i < MEM_SET_SIZE_B; i++)
+  {
+    if (set[i] != copy[MEM_SET_SIZE_B - i - 1])
+    {
+      ret = TEST_ERROR;
+    }
+  }
+
+  free_words( (uint32_t*)copy );
+  return ret;
+}
+
+void course1(void) 
+{
+  uint8_t i;
+  int8_t failed = 0;
+  int8_t results[TESTCOUNT];
+
+  results[0] = test_data1();
+  results[1] = test_data2();
+  results[2] = test_memmove1();
+  results[3] = test_memmove2();
+  results[4] = test_memmove3();
+  results[5] = test_memcpy();
+  results[6] = test_memset();
+  results[7] = test_reverse();
+
+  for ( i = 0; i < TESTCOUNT; i++) 
+  {
+    failed += results[i];
+  }
+
+  printf("--------------------------------\n");
+  printf("Test Results:\n");
+  printf("  PASSED: %d / %d\n", (TESTCOUNT - failed), TESTCOUNT);
+  printf("  FAILED: %d / %d\n", failed, TESTCOUNT);
+  printf("--------------------------------\n");
+}
+
+void project1()
+{
+  //test_data1(); 
+  //test_data2();
+  //test_memmove1();
+  //test_memmove2();
+  //test_memmove3();
+  //test_memcpy();
+  //test_memset();
+  //test_reverse();
+  course1();
+}
+
