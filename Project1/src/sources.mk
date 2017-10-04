@@ -21,4 +21,8 @@ INCLUDE_LINKER = ../platform/MKL25Z128xxx4_flash.ld
 
 vpath %.h $(INCLUDE_H)
 vpath %.h $(INCLUDE_H_FF)
+<<<<<<< HEAD
 vpath %.h $(INCLUDE_H_FF1)
+=======
+vpath %.h $(INLCUDE_H_FF1)
+>>>>>>> Bug fixes

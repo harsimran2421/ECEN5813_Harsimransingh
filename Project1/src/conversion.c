@@ -7,7 +7,6 @@
  * *   Description: source file for data manipulation 
  * *     -my_itoa
  * *     -my_atoi
- * *     -dump_memory
  * *     -big_to_little32
  * *     -little_to_big32
  * *

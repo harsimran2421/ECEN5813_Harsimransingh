@@ -23,7 +23,22 @@ PLATFORM = HOST
 PROG = project1
 TARGET = $(PROG).elf
 
+<<<<<<< HEAD
 #Platform specific Compile Defines
+=======
+ ifeq ($(PROJECT1-SW),ON)
+	PROJECT1FLAG = PROJECT1
+else
+	PROJECT1FLAG = OFF
+endif
+
+ifeq ($(DEBUG),ON)
+	DEBUGFLAG = VERBOSE
+else
+	DEBUGFLAG = OFF
+endif
+
+>>>>>>> Bug fixes
 ifeq ($(PLATFORM),HOST)
 	CC = gcc
 	LD = -ld
@@ -63,6 +78,7 @@ DEP = $(SRCS:.c=.dep)
 %.asm : %.c
 	$(CC) $(CFLAGS) -S $^ > $@
 
+<<<<<<< HEAD
 #object files
 %.o : %.c 
 	$(CC) $(CPPFLAGS) -c -DPROJECT1 $^ $(CFLAGS) -o $@
@@ -73,6 +89,13 @@ DEP = $(SRCS:.c=.dep)
 
 
 .PHONY: all
+=======
+%.o : %.c 
+	$(CC) $(CPPFLAGS) -c -D$(PROJECT1FLAG) -D$(DEBUGFLAG) $^ $(CFLAGS) -o $@
+%.dep : %.c
+	$(CC) -M $(CPPFLAGS) $^ $(CFLAGS) > $@
+.PHONY: all clean compile-all static-link build-lib direct-link build 
+>>>>>>> Bug fixes
 build: all
 all: $(TARGET) 
 
@@ -81,14 +104,23 @@ $(TARGET): $(OBJS) $(SRC_O) $(SRC_D) $(DEP)
 	$(CC) $(CPPFLAGS) $(OBJS) $(SRC_O) $(CFLAGS) $(LINKF) -o $@ $(LDFLAGS)
 	size -d $(TARGET)
 
+<<<<<<< HEAD
 #This is used to just compile files without linking
 compile-all: $(OBJS) $(SRC_O)
 	$(CC) $(CPPFLAGS) $^ $(CFLAGS) $(LDFLAGS)
+=======
+compile-all: $(OBJS) 
+	$(CC) $(CPPFLAGS) $^ $(CFLAGS)
+
+static-link: main.o libproject1.a
+	$(CC) $(CPPFLAGS) -o $@ main.o libproject1.a
+>>>>>>> Bug fixes
 
 #This is to create archive static library
 build-lib: memory.o conversion.o project1.o
 	ar rcs libproject1.a $^
 
+<<<<<<< HEAD
 #This is to use the static library created
 static-link: main.o libproject1.a
 	$(CC) $(CPPFLAGS) -o $@ main.o libproject1.a
@@ -98,6 +130,10 @@ project1.exe: $(OBJS) $(SRC_O) $(LINKF) $(SRC_DEP)
 	$(LD) $(CPPFLAGS) $(OBJS) $(SRC_O) -Map=project1.map $(LINKF) -o $@ 
 
 .PHONY: clean
+=======
+direct-link: $(OBJS)
+	ld $(CPPFLAGS) -o direct-linkk.elf $^ -lc -A -b -g --entry main
+>>>>>>> Bug fixes
 
 #This is used to remove object,dependency,executable,map,preprocessor,.s and .exe files
 clean:

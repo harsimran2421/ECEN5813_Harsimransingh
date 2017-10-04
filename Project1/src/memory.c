@@ -5,7 +5,6 @@
  * *   File: memory.c
  * *
  * *   Description: source file for data manipulation 
- * *    -cal_length
  * *    -my_memmove
  * *    -my_memcpy
  * *    -my_memset
@@ -21,16 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
-/*uint8_t cal_length(uint8_t *ptr)                              //function to calculate the length of the string
-{
-	uint8_t count = 0;
-	while(*ptr != '\0')
-	{
-		count++;
-		ptr++;
-	}
-	return count;
-}*/
 
 uint8_t *my_memmove(uint8_t *src, uint8_t *dst, size_t length) //function to move data from one memory location to another
 {
