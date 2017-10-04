@@ -16,7 +16,7 @@ Requirements for Build system and Makefile:
 
 1. Flags:
 -Werror = Converts all warnings to errors
--g = Produce's debugging informatiion in OS's native format.
+-g = Produces debugging informatiion in OS's native format.
 -Wall = Used to enable warning messages
 -O0 = Used to optimize for compilation time
 -std=c99 = Compatible with c99 standard
@@ -26,10 +26,18 @@ Requirements for Build system and Makefile:
 -CC = Enables us to include cross and native compilers
 -CFLAGS = Enables us to add flags to recipe
 -M = To create dependency file
-
+-mfloat-abi=hard =
+-mfpu =
+-mthumb =
+-Wl =
+--specs=nosys.specs =
+-mfpu=fpv4-sp-d16 =
+-mfloat-abi=soft =
+ 
 2. Utilities:
 -size = To see the size of the object file in decimal and hex
 -ar = Used to create archive for files like a static library
+-ld = Used to invoke linker without gcc
 
 3. Outputs:
 .map = -Map flag used to create map file
@@ -69,7 +77,7 @@ Target Specifications used were:
 Using Compile time switch "PLATFORM":
 It is used to set the platform for which we want to run the commands.
 The platforms are HOST LINUX-Ubuntu, Freedom Freescale KL25Z, BeagleBone Black.
-The default platform us HOST LINUX-Ubuntu.
+The default platform is HOST LINUX-Ubuntu.
 
 Using Compile time switch "PROJECT1-SW":
 Compilation of project1 switched on only when ON is written to "PROJECT1-SW" using command line.

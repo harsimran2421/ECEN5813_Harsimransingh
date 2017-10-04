@@ -12,6 +12,7 @@
 #-*-Makefile-*-
 #target: Dependencies
 #	action
+#---------------------------------------------------------------------------------
 
 include sources.mk
 
@@ -46,24 +47,27 @@ ifeq ($(PLATFORM),KL25Z)
 	CFLAGS = -mcpu=cortex-m0plus --specs=nosys.specs -Wall -Werror -g -o0 -std=c99 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=soft
 	LDFLAGS =-Wl,-Map=$(PROG).map $(LINKF)
 	LINKF += $(addprefix -T,$(INCLUDE_LINKER))
-	SRC_O = $(SRC_K:c. =.o)
-	SRC_D = $(SRC_K:c =.dep)
+	SRC_O = $(SRC_K:.c =.o)
+	SRC_D = $(SRC_K:.c =.dep)
 endif
-
 
 OBJS = $(SRCS:.c=.o)
 DEP = $(SRCS:.c=.dep)
 
-#Build rules to directly compile
+#Build rules to directly compile:
+#preproccessor files
 %.i : %.c
 	$(CC) $(CFLAGS) -E $^ > $@
 
+#assembly file
 %.asm : %.c
 	$(CC) $(CFLAGS) -S $^ > $@
 
+#object files
 %.o : %.c 
 	$(CC) $(CPPFLAGS) -c -DPROJECT1 $^ $(CFLAGS) -o $@
 
+#dependency files
 %.dep : %.c
 	$(CC) -M $(CPPFLAGS) $^ $(CFLAGS) > $@
 
@@ -72,25 +76,30 @@ DEP = $(SRCS:.c=.dep)
 build: all
 all: $(TARGET) 
 
+#This is used to produce executable file
 $(TARGET): $(OBJS) $(SRC_O) $(SRC_D) $(DEP)
-	$(CC) $(OBJS) $(SRC_O) $(CFLAGS) -o $@ $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(OBJS) $(SRC_O) $(CFLAGS) $(LINKF) -o $@ $(LDFLAGS)
 	size -d $(TARGET)
 
-#Compile time switch commands
+#This is used to just compile files without linking
 compile-all: $(OBJS) $(SRC_O)
 	$(CC) $(CPPFLAGS) $^ $(CFLAGS) $(LDFLAGS)
 
-static-link: main.o libproject1
-	$(CC) $(CPPFLAGS) -o $@ main.o libproject1
-
+#This is to create archive static library
 build-lib: memory.o conversion.o project1.o
 	ar rcs libproject1.a $^
 
-project1.exe: $(INCLUDE_LINKER) main.o project1.o conversion.o debug.o memory.o
-	$(LD) $(CPPFLAGS) -Map=project1.map $(LINKF) -N -o main.o project1.o conversion.o debug.o memory.o
+#This is to use the static library created
+static-link: main.o libproject1.a
+	$(CC) $(CPPFLAGS) -o $@ main.o libproject1.a
+
+#This is used to invoke linker without gcc
+project1.exe: $(OBJS) $(SRC_O) $(LINKF) $(SRC_DEP)
+	$(LD) $(CPPFLAGS) $(OBJS) $(SRC_O) -Map=project1.map $(LINKF) -o $@ 
 
 .PHONY: clean
 
+#This is used to remove object,dependency,executable,map,preprocessor,.s and .exe files
 clean:
-	rm -f $(OBJS) $(TARGET) $(DEP) $(PROG).map *.i *.s
+	rm -f $(OBJS) $(TARGET) $(DEP) $(PROG).map $(SRC_O) $(SRC_D) *.i *.s *.exe
 	 

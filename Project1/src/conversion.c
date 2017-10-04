@@ -109,7 +109,7 @@ int32_t my_atoi(uint8_t *ptr, uint8_t digits, uint32_t base)//function to conver
 int8_t big_to_little32(uint32_t *data, uint32_t length)   //to change the endianness from big to little
 {	
 	uint32_t temp, temp1, temp2, temp3;
-	temp = *data & 0XFF000000;                              //masking all but msbs
+	temp = *data & 0XFF000000;                              //masking all but msb
 	temp1 = *data & 0X000000FF;                            
 	temp2 = *data & 0X00FF0000;
 	temp3 = *data & 0X0000FF00;
