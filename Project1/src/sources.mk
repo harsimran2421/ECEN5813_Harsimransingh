@@ -9,10 +9,6 @@ SRCS = main.c \
 SRC_K = system_MKL25Z4.c\
 	startup_MKL25Z4.S
 
-#Defining files which are used for making static library
-LIBR = memory.c \
-       conversion.c
-
 #Defining paths for the header files
 INCLUDE_H = ../includes/common/
 INCLUDE_H_FF = ../includes/kl25z/
@@ -21,8 +17,6 @@ INCLUDE_LINKER = ../platform/MKL25Z128xxx4_flash.ld
 
 vpath %.h $(INCLUDE_H)
 vpath %.h $(INCLUDE_H_FF)
-<<<<<<< HEAD
 vpath %.h $(INCLUDE_H_FF1)
-=======
 vpath %.h $(INLCUDE_H_FF1)
->>>>>>> Bug fixes
+
