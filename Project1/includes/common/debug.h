@@ -12,7 +12,8 @@
  /header for function called "memory"*/
 
 #ifndef DEBUG_H_
-#define DEBUG_H_
+#define DEBUG_H
+#include<stdint.h>
 void print_memory(uint8_t *start, uint32_t length);   
 /**
  * Function to print data present at the given memory location

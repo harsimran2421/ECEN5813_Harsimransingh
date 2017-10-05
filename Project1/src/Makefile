@@ -18,7 +18,7 @@ include sources.mk
 
 #Setting up of Default Platform
 PLATFORM = HOST
-
+KL25ZFLAG = OFF
 #Common Compile Defines
 PROG = project1
 TARGET = $(PROG).elf
@@ -60,6 +60,7 @@ ifeq ($(PLATFORM),KL25Z)
 	CFLAGS = -mcpu=cortex-m0plus --specs=nosys.specs -Wall -Werror -g -o0 -std=c99 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=soft
 	LDFLAGS =-Wl,-Map=$(PROG).map 
 	LINKF += $(addprefix -T, $(INCLUDE_LINKER))
+	KL25ZFLAG = KL25Z
 endif
 
 OBJS = $(SRCS:.c=.o)
@@ -76,7 +77,7 @@ DEP = $(SRCS:.c=.dep)
 
 #object files
 %.o : %.c 
-	$(CC) $(CPPFLAGS) -c -DPROJECT1 $^ $(CFLAGS) -o $@
+	$(CC) $(CPPFLAGS) -c -D$(PROJECT1FLAG) -D$(DEBUGFLAG) -D$(KL25ZFLAG) $^ $(CFLAGS) -o $@
 
 #dependency files
 %.dep : %.c
