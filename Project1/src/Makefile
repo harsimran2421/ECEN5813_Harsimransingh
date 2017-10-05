@@ -58,10 +58,8 @@ ifeq ($(PLATFORM),KL25Z)
 	LD = arm-none-eabi-ld
 	CPPFLAGS += $(addprefix -I, $(INCLUDE_H) $(INCLUDE_H_FF) $(INCLUDE_H_FF1))
 	CFLAGS = -mcpu=cortex-m0plus --specs=nosys.specs -Wall -Werror -g -o0 -std=c99 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=soft
-	LDFLAGS =-Wl,-Map=$(PROG).map $(LINKF)
-	LINKF += $(addprefix -T,$(INCLUDE_LINKER))
-	SRC_O = $(SRC_K:.c =.o)
-	SRC_D = $(SRC_K:.c =.dep)
+	LDFLAGS =-Wl,-Map=$(PROG).map 
+	LINKF += $(addprefix -T, $(INCLUDE_LINKER))
 endif
 
 OBJS = $(SRCS:.c=.o)
@@ -84,6 +82,7 @@ DEP = $(SRCS:.c=.dep)
 %.dep : %.c
 	$(CC) -M $(CPPFLAGS) $^ $(CFLAGS) > $@
 
+#This is used to tell make file that take the names listed as target and not consider them as files
 .PHONY: all clean compile-all static-link build-lib direct-link build 
 
 build: all
@@ -95,7 +94,7 @@ $(TARGET): $(OBJS) $(SRC_O) $(SRC_D) $(DEP)
 	$(CC) $(CPPFLAGS) $(OBJS) $(SRC_O) $(CFLAGS) $(LINKF) -o $@ $(LDFLAGS)
 	size -d $(TARGET)
 
-#This is used to just compile files without linking
+#This is used to just compile files without linking 
 compile-all: $(OBJS) $(SRC_O)
 	$(CC) $(CPPFLAGS) $^ $(CFLAGS) $(LDFLAGS)
 
@@ -107,11 +106,11 @@ build-lib: memory.o conversion.o project1.o
 	ar rcs libproject1.a $^
 
 #This is used to invoke linker without gcc
-project1.exe: $(OBJS) $(SRC_O) $(LINKF) $(SRC_DEP)
-	$(LD) $(CPPFLAGS) $(OBJS) $(SRC_O) -Map=project1.map $(LINKF) -o $@ 
-
-direct-link: $(OBJS)
-	ld $(CPPFLAGS) -o direct-linkk.elf $^ -lc -A -b -g --entry main
+project1: $(OBJS)
+	$(LD) $(CPPFLAGS) startup_MKL25Z4.s -o main.o project1.o memory.o conversion.o debug.o system_MKL25Z4.o $(LINKF) -N --entry main
+#This is used to create executeable without invoking gcc for host
+direct-link: $(OBJS) 
+	ld $(CPPFLAGS) -o direct-linkk.elf $^ -lc -N --entry main
 
 #This is used to remove object,dependency,executable,map,preprocessor,.s and .exe files
 clean:

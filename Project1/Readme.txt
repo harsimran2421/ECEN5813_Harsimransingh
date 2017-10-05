@@ -26,7 +26,7 @@ Requirements for Build system and Makefile:
 -CC = Enables us to include cross and native compilers
 -CFLAGS = Enables us to add flags to recipe
 -M = To create dependency file
--mfloat-abi=hard =
+-mfloat-abi=hard =  
 -mfpu =
 -mthumb =
 -Wl =
