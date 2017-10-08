@@ -1,2 +1,2 @@
 # ECEN5813_Harsimransingh
-ecen 5813 projects
+This repository is for uploading homeworks and projects for the ECEN 5813 course. 
