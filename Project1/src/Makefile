@@ -19,16 +19,15 @@ include sources.mk
 #Setting up of Default Platform
 PLATFORM = HOST
 KL25ZFLAG = OFF
+PROJECT1FLAG = PROJECT1
 #Common Compile Defines
 PROG = project1
 TARGET = $(PROG).elf
-
 #Platform specific Compile Defines
- 
-ifeq ($(PROJECT1-SW),ON)
-	PROJECT1FLAG = PROJECT1
-else
+ifeq ($(PROJECT1-SW),OFF)
 	PROJECT1FLAG = OFF
+else
+	PROJECT1FLAG = PROJECT1
 endif
 
 ifeq ($(DEBUG),ON)
@@ -84,7 +83,7 @@ DEP = $(SRCS:.c=.dep)
 	$(CC) -M $(CPPFLAGS) $^ $(CFLAGS) > $@
 
 #This is used to tell make file that take the names listed as target and not consider them as files
-.PHONY: all clean compile-all static-link build-lib direct-link build 
+.PHONY: all clean compile-all static-link build-lib direct-link build upload
 
 build: all
 
@@ -113,6 +112,8 @@ project1: $(OBJS)
 direct-link: $(OBJS) 
 	ld $(CPPFLAGS) -o direct-linkk.elf $^ -lc -N --entry main
 
+upload:
+	scp project1.elf root@192.168.7.2:~/Hw-3
 #This is used to remove object,dependency,executable,map,preprocessor,.s and .exe files
 clean:
 	rm -f $(OBJS) $(DEP) $(TARGET) $(PROG).map $(SRC_O) $(SRC_D) *.i *.s *.exe
