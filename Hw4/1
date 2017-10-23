@@ -1,0 +1,7 @@
+//#include <stdio.h>
+//#include <stdint.h>
+//#define SET_EQUAL(a,b) (a=(uint8_t)b)
+#define SQUARE(a) (a*a)
+//#define BASE 16
+//#define OFFSET (10+BASE)
+//int8_t var = OFFSET*2;
