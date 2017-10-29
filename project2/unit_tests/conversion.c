@@ -77,6 +77,10 @@ return digits;
 
 int32_t my_atoi(uint8_t *ptr, uint8_t digits, uint32_t base)//function to convert ascii strings to integers
 {
+  if(ptr == NULL)
+  {
+    return Invalid_pointer;
+  }
 	int32_t integer=0;
 	uint8_t i, sign=0;
 	if(*ptr == '-')                                           //to check whether the first character is '-' and set the sign bit accordingly
@@ -107,6 +111,10 @@ int32_t my_atoi(uint8_t *ptr, uint8_t digits, uint32_t base)//function to conver
 
 int8_t big_to_little32(uint32_t *data, uint32_t length)   //to change the endianness from big to little
 {	
+  if(data == NULL)
+  {
+    return Invalid_pointer;
+  }
 	uint32_t temp, temp1, temp2, temp3;
 	temp = *data & 0XFF000000;                              //masking all but msb
 	temp1 = *data & 0X000000FF;                            
@@ -117,12 +125,15 @@ int8_t big_to_little32(uint32_t *data, uint32_t length)   //to change the endian
 	temp2 = temp2>>8;
 	temp3 = temp3<<8;
 	*data = temp | temp1 | temp2 | temp3;                   //assembles all bytes after proper shifting and getting the required endianness
-  return 0;
+  return Pass;
 }
 
 int8_t little_to_big32(uint32_t *data, uint32_t length)   //to change the endianness from little to big
 {
-
+  if(data == NULL)
+  {
+    return Invalid_pointer;
+  }
 	uint32_t temp, temp1, temp2, temp3;       
 	temp = *data & 0XFF000000;                              //masking the lsb
 	temp1 = *data & 0X000000FF;
@@ -133,6 +144,6 @@ int8_t little_to_big32(uint32_t *data, uint32_t length)   //to change the endian
 	temp2 = temp2>>8;
 	temp3 = temp3<<8;
 	*data = temp | temp1 | temp2 | temp3;                   //assembles all the bytes after proper shifting to get the required endianness
-  return 0;
+  return Pass;
 }
 

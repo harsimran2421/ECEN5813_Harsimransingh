@@ -17,6 +17,13 @@
 
 #ifndef CONERSION_H_
 #define CONVERSION_H_
+
+typedef enum conversion_status{
+  Invalid_pointer,
+  Pass,
+  Fail
+}conversion_status_t;
+
 uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base);   
 /**
  * Function converting integral values to strings

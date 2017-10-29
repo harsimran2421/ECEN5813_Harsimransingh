@@ -8,7 +8,8 @@ Available,
 Null_pointer, 
 No_length, 
 Buffer_allocation_failure,
-Wrong_memory_access
+Wrong_memory_access,
+Error
 }CB_status;
 
 typedef struct circular

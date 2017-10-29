@@ -11,6 +11,7 @@ CB_status CB_init(CB_t *cbuf,uint8_t  length)
 	cbuf->tail = cbuf->buffer;
 	cbuf->count = 0;
   cbuf->peek = 0;
+  return No_error;
 }
 
 CB_status CB_buffer_add_item(CB_t *cbuf, uint8_t val)
@@ -32,6 +33,7 @@ CB_status CB_buffer_add_item(CB_t *cbuf, uint8_t val)
 	cbuf->tail++;
   }
 	cbuf->count=cbuf->count+1;
+  return No_error;
 }
 CB_status CB_buffer_remove_item(CB_t *cbuf)
 {	
@@ -50,7 +52,7 @@ CB_status CB_buffer_remove_item(CB_t *cbuf)
   }
   cbuf->count = cbuf->count-1;
   cbuf->status=No_error;
-  return cbuf->status;
+  return No_error;
 }
 
 CB_status CB_is_full(CB_t *cbuf)
@@ -61,11 +63,10 @@ CB_status CB_is_full(CB_t *cbuf)
   }
   if(cbuf->count == cbuf->length)
   {
-    cbuf->status = Full;
+    return Full;
   }
   else
-    cbuf->status = Available;
-  return cbuf->status;
+    return Available;
 }
 
 CB_status CB_is_empty(CB_t *cbuf)
@@ -76,11 +77,10 @@ CB_status CB_is_empty(CB_t *cbuf)
   }
   if(cbuf->count == 0)
   {
-    cbuf->status = Empty;
+  return Empty;
   }
   else
-    cbuf->status = Available;
-  return cbuf->status;
+    return Available;
 }
 
 CB_status CB_peek(CB_t *cbuf, uint8_t position)
@@ -91,11 +91,11 @@ CB_status CB_peek(CB_t *cbuf, uint8_t position)
   }
   else if(position > cbuf->length)
   {
-    cbuf->status = Wrong_memory_access;
+    return Wrong_memory_access;
   }
   else if(position > cbuf->count)
   {
-    cbuf->status = Empty;
+    return Empty;
   }
   else
   {
@@ -113,9 +113,8 @@ CB_status CB_peek(CB_t *cbuf, uint8_t position)
       position--;
     }
     cbuf->peek = *pos;
-    cbuf->status=No_error;
   }
-  return (cbuf->status);
+  return No_error;
 }
 
 CB_status CB_destroy(CB_t *cbuf)
