@@ -33,11 +33,13 @@
 
 CB_t *create_buffer(CB_t *cbuf);
 
+CB_status add_to_buffer(uint8_t *str_ptr);
+
 int UART_configure(void);
 
 int UART_send(char data);
 
-int UART_send_n(uint8_t *data, int length);
+int UART_send_n(uint8_t *data, uint8_t length);
 
 int UART_receive(void);
 

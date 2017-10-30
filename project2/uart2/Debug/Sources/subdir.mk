@@ -8,6 +8,7 @@ C_SRCS += \
 ../Sources/conversion.c \
 ../Sources/main.c \
 ../Sources/memory.c \
+../Sources/project2.c \
 ../Sources/uart.c 
 
 OBJS += \
@@ -15,6 +16,7 @@ OBJS += \
 ./Sources/conversion.o \
 ./Sources/main.o \
 ./Sources/memory.o \
+./Sources/project2.o \
 ./Sources/uart.o 
 
 C_DEPS += \
@@ -22,6 +24,7 @@ C_DEPS += \
 ./Sources/conversion.d \
 ./Sources/main.d \
 ./Sources/memory.d \
+./Sources/project2.d \
 ./Sources/uart.d 
 
 

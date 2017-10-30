@@ -32,7 +32,8 @@ uint8_t my_itoa(int32_t data, uint8_t *ptr, uint32_t base)  //function to conver
   if(data==0)
 	{						                                                //to return zero  value if zero is entered
 		*ptr='0';
-		return 0;
+		digits=1;
+		return digits;
 	}
 	while(data != 0)
 	{

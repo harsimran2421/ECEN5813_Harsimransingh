@@ -32,21 +32,11 @@
 #include "MKL25Z4.h"
 #include "uart.h"
 #include "circbuf.h"
+#include "project2.h"
 
 extern CB_t *transbuf;
 extern CB_t *recbuf;
-
-uint8_t alpha_Count = 0;
-uint8_t num_Count = 0;
-uint8_t punc_Count = 0;
-uint8_t misc_Count = 0;
-uint8_t rec_DataCount = 0;
-
-void project2()
-{
-
-}
-
+extern uint8_t recflag;
 int main(void)
 {
 uint8_t i = 0;
@@ -55,20 +45,15 @@ recbuf = create_buffer(recbuf);
 uint8_t val = 0;
 UART_configure();
 uint8_t str[] ="harsimransingh Bindra";
-uint8_t *str_ptr = &str[0];
-while(*(str_ptr) != '\0')
-{
-	CB_buffer_add_item(transbuf,*str_ptr);
-	str_ptr++;
-}
-
-UART0_C2 |= UART0_C2_TIE_MASK;
-
+add_to_buffer(str);
+UART0_C2 |= UART0_C2_TIE_MASK | UART0_C2_RIE_MASK;
 while(1)
 {
-	//project2();
-	//UART_send(str);
-	//UART0_IRQHandler();
+
+	if(recflag==1)
+	{
+		project2();
+	}
 }
 return 0;
 }

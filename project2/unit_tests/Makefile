@@ -1,10 +1,7 @@
 CC = cc
 CFLAGS = -std=c99 -Wall -Werror -g -O0
 
-#
-# build third-party libraries
-#
-SUBDIRS = 3rd-party
+SUBDIRS = additional
 
 ifdef SUBDIRS
 .PHONY : $(SUBDIRS)
@@ -16,7 +13,7 @@ $(SUBDIRS) :
 endif
 
 
-THIRD_PARTY_DIR = 3rd-party
+THIRD_PARTY_DIR = additional
 CMOCKA_INCLUDE_DIR = $(THIRD_PARTY_DIR)/build-Debug/include
 CMOCKA_LIBRARY = $(THIRD_PARTY_DIR)/build-Debug/lib/libcmocka.a
 
@@ -105,11 +102,6 @@ $(TEST_BUFFER_EXE) : $(TEST_BUFFER_SRCS) $(LIB)
 	$(CC) $(CFLAGS) -o $@ $^ $(CMOCKA_LIBRARY) -lm
 
 .PHONY : clean
-clean : FORCE
+clean :
 	-rm -rf *~ *.o $(LIB) $(EXE) $(TEST_MEMORY_EXE) $(TEST_BUFFER_EXE) $(TEST_CONVERSION_EXE)  *.dSYM/
 
-.PHONY : clobber
-clobber : $(SUBDIRS) clean
-
-
-FORCE :

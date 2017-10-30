@@ -49,7 +49,20 @@ int UART_configure(void)
 	PORTA_PCR1 = 0x0200;
 
 	NVIC->ISER[0] |= 0x00001000; /* enable INT12 (bit 12 of ISER[0]) */
+	NVIC_ClearPendingIRQ(UART0_IRQn);
+	NVIC_EnableIRQ(UART0_IRQn);
+	NVIC_SetPriority(UART0_IRQn, 2);
 
+}
+
+CB_status add_to_buffer(uint8_t *str_ptr)
+{
+	while(*(str_ptr) != '\0')
+	{
+		CB_buffer_add_item(transbuf,*str_ptr);
+		str_ptr++;
+	}
+return No_error;
 }
 
 int UART_send(char data)
@@ -60,7 +73,7 @@ int UART_send(char data)
 	UART0_D = data;
 }
 
-int UART_send_n(uint8_t *data, int length)
+int UART_send_n(uint8_t *data, uint8_t length)
 {
 	for (int i=0;i<=length-1;i++)
 	{
@@ -111,7 +124,7 @@ void UART0_IRQHandler(void)
 		else if(((UART0_C2 & UART0_C2_RIE_MASK)!=0) && ((UART0_S1 & UART0_S1_RDRF_MASK) !=0)){
 	 		uint8_t val = UART_receive();
 	 		CB_buffer_add_item(recbuf,val);
-	     	UART0_C2 &= ~UART_C2_RIE_MASK;
+	     	//UART0_C2 &= ~UART_C2_RIE_MASK;
 	     	recflag = 1;
 	 	}
 	__enable_irq();
