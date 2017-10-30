@@ -1,3 +1,21 @@
+/********************************************
+ * *   Authors: Harsimransingh Bindra, Smitesh Modak
+ * *   Date Edited: 10/29/2017
+ * *
+ * *   File: uart.c
+ * *
+ * *   Description: Header file for uart communication 
+ * *     -UART_congfig
+ * *     -UART_send
+ * *     -UART_send_n
+ * *     -UART_recieve
+ * *     -UART_receive_n
+ * *	 -UART0_IRQHandler
+ * *
+ * *
+ * ********************************************************/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "uart.h"
@@ -57,77 +75,77 @@ int UART_configure(void)
 
 CB_status add_to_buffer(uint8_t *str_ptr)
 {
-	while(*(str_ptr) != '\0')
+	while(*(str_ptr) != '\0')				//checks for the null character
 	{
-		CB_buffer_add_item(transbuf,*str_ptr);
-		str_ptr++;
+		CB_buffer_add_item(transbuf,*str_ptr);		//adds the data to the transmit buffer
+		str_ptr++;							// increments the pointer
 	}
-return No_error;
+return No_error;							
 }
 
-int UART_send(char data)
+int UART_send(uint8_t *data)
 {
-	while(!(UART0->S1 & 0xC0))
+	while(!(UART0->S1 & 0xC0))				
 	{
-	} /* to wait until the transmitting buffer is empty */
-	UART0_D = data;
+	} 										/* to wait until the transmitting buffer is empty */
+	UART0_D = *data;						//write data in the UART0_D register to transmit	
 }
 
 int UART_send_n(uint8_t *data, uint8_t length)
 {
-	for (int i=0;i<=length-1;i++)
+	for (int i=0;i<=length-1;i++)			//Loop to execute transmitting of data based on the length.
 	{
-			while(!(UART0->S1 & 0xC0))
+			while(!(UART0->S1 & 0xC0))	
 			{
-			} /* wait for transmit buffer empty */
-		UART0_D = *data;
+			} 								/* wait for transmit buffer empty */
+		UART0_D = *data;					//write data in the UART0_D registerr to transmit
 		data++;
 	}
 }
 
-int UART_receive(void)
+int UART_receive(uint8_t *data)
 {	uint8_t data=0;
 	while(!(UART0->S1 & 0x20))
 	{
 	} /* wait for receive buffer full */
-	 data = UART0_D ; /* read the char received */
+	 *data = UART0_D ; 						// read the char received 	
 	 return data;
 }
 
-int UART_receive_n(uint8_t *data,int length)
+int UART_receive_n(uint8_t *data,int length)	//Loop to execute receiving of data based on the length.
 {
 		for(int i=0;i<=length-1;i++)
 		{
 			while(!(UART0->S1 & 0x20))
 			{
-			} /* wait for receive buffer full */
-			*data = UART0_D ; /* read the char received */
+			} 								/* wait for receive buffer full */
+			*data = UART0_D ; 				// read the char received
 			data++;
 		}
 }
 
 void UART0_IRQHandler(void)
 {
-	__disable_irq();
+	__disable_irq();						//disable interrupt once recieved
 	char data;
-		if(((UART0_C2 & UART0_C2_TIE_MASK)!=0) && (transbuf->count != 0)){
-			data = *(transbuf->head);
-			UART_send(data);
-			CB_buffer_remove_item(transbuf/*, &UART0_D*/);
-				if(transbuf->count == 0)
+		if(((UART0_C2 & UART0_C2_TIE_MASK)!=0) && (transbuf->count != 0)){	//check if transmit interrupt is enabled and buffer count is not equal to 0
+			data = *(transbuf->head);			
+			UART_send(data);												//transmit data
+			CB_buffer_remove_item(transbuf/*, &UART0_D*/);					//remove transmitted data
+				if(transbuf->count == 0)									
 			{
-				UART0_C2 &= ~UART0_C2_TIE_MASK;
+				UART0_C2 &= ~UART0_C2_TIE_MASK;								//disable transmit interrupt
 			}
 				else
-					UART0_C2 |= UART0_C2_TIE_MASK;
+					UART0_C2 |= UART0_C2_TIE_MASK;							//keep transmit interrupt enabled
 	   	}
-		else if(((UART0_C2 & UART0_C2_RIE_MASK)!=0) && ((UART0_S1 & UART0_S1_RDRF_MASK) !=0)){
-	 		uint8_t val = UART_receive();
-	 		CB_buffer_add_item(recbuf,val);
-	     	//UART0_C2 &= ~UART_C2_RIE_MASK;
-	     	recflag = 1;
+		else if(((UART0_C2 & UART0_C2_RIE_MASK)!=0) && ((UART0_S1 & UART0_S1_RDRF_MASK) !=0)){	//check if receive interrupt is enabled 
+	 		uint8_t val = UART_receive();									//read received data
+	 		CB_buffer_add_item(recbuf,val);									//add data to receive buffer
+	     	//UART0_C2 &= ~UART_C2_RIE_MASK;	
+	     	recflag = 1;													//set receive flag
 	 	}
-	__enable_irq();
+	__enable_irq();															//enable interrupt once process for previous interrupt is done
 }
 
 
