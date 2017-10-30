@@ -60,7 +60,7 @@ CB_status add_to_buffer(uint8_t *str_ptr);
  * give status about the buffer.
  */
 
-int UART_configure(void);
+void UART_configure(void);
 /**
  * Function to configure UART
  *
@@ -69,7 +69,7 @@ int UART_configure(void);
  * interrupts..
  */
 
-int UART_send(uint8_t *data);
+void UART_send(uint8_t *data);
 /**
  * Function to transmit
  *
@@ -78,7 +78,7 @@ int UART_send(uint8_t *data);
  *
  */
 
-int UART_send_n(uint8_t *data, uint8_t length);
+void UART_send_n(uint8_t *data, uint8_t length);
 /**
  * Function to transmit data of length n
  *
@@ -87,7 +87,7 @@ int UART_send_n(uint8_t *data, uint8_t length);
  *
  */
 
-int UART_receive(uint8_t *data);
+void UART_receive(uint8_t *data);
 /**
  * Function to receive data 
  *
@@ -96,7 +96,7 @@ int UART_receive(uint8_t *data);
  *
  */
 
-int UART_receive_n(uint8_t *data,int length);
+void UART_receive_n(uint8_t *data,uint8_t length);
 /**
  * Function to receive data of length n
  *

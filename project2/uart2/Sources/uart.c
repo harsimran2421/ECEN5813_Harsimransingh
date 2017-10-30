@@ -81,7 +81,7 @@ CB_status add_to_buffer(uint8_t *str_ptr)
 return No_error;							
 }
 
-int UART_send(uint8_t *data)
+void UART_send(uint8_t *data)
 {
 	while(!(UART0->S1 & 0xC0))				
 	{
@@ -89,7 +89,7 @@ int UART_send(uint8_t *data)
 	UART0_D = *data;						//write data in the UART0_D register to transmit	
 }
 
-int UART_send_n(uint8_t *data, uint8_t length)
+void UART_send_n(uint8_t *data, uint8_t length)
 {
 	for (int i=0;i<=length-1;i++)			//Loop to execute transmitting of data based on the length.
 	{
@@ -101,7 +101,7 @@ int UART_send_n(uint8_t *data, uint8_t length)
 	}
 }
 
-int UART_receive(uint8_t *data)
+void UART_receive(uint8_t *data)
 {	uint8_t data=0;
 	while(!(UART0->S1 & 0x20))
 	{
@@ -110,7 +110,7 @@ int UART_receive(uint8_t *data)
 	 return data;
 }
 
-int UART_receive_n(uint8_t *data,int length)	//Loop to execute receiving of data based on the length.
+void UART_receive_n(uint8_t *data,uint8_t length)	//Loop to execute receiving of data based on the length.
 {
 		for(int i=0;i<=length-1;i++)
 		{
@@ -125,10 +125,8 @@ int UART_receive_n(uint8_t *data,int length)	//Loop to execute receiving of data
 void UART0_IRQHandler(void)
 {
 	__disable_irq();						//disable interrupt once recieved
-	char data;
-		if(((UART0_C2 & UART0_C2_TIE_MASK)!=0) && (transbuf->count != 0)){	//check if transmit interrupt is enabled and buffer count is not equal to 0
-			data = *(transbuf->head);			
-			UART_send(data);												//transmit data
+		if(((UART0_C2 & UART0_C2_TIE_MASK)!=0) && (transbuf->count != 0)){	//check if transmit interrupt is enabled and buffer count is not equal to 0			
+			UART_send(transbuf->head);												//transmit data
 			CB_buffer_remove_item(transbuf/*, &UART0_D*/);					//remove transmitted data
 				if(transbuf->count == 0)									
 			{
