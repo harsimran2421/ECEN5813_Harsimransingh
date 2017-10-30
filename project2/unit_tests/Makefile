@@ -1,3 +1,5 @@
+include sources.mk
+
 CC = cc
 CFLAGS = -std=c99 -Wall -Werror -g -O0
 
@@ -20,7 +22,7 @@ CMOCKA_LIBRARY = $(THIRD_PARTY_DIR)/build-Debug/lib/libcmocka.a
 cmocka : $(SUBDIRS)
 
 CFLAGS += -I $(CMOCKA_INCLUDE_DIR)
-
+CFLAGS += -I $(INCLUDE_H)
 #
 # quick and dirty build rules to demonstrate testing, not good build
 # system practices.
