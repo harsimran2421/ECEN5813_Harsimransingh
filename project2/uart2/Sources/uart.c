@@ -59,8 +59,6 @@ int UART_configure(void)
 
 	UART0_C1 = 0x00;
 
-	UART0_C2 = UART0_C2_RE_MASK | UART0_C2_TE_MASK | UART0_C2_RIE_MASK;
-
 	SIM_SCGC5 |= SIM_SCGC5_PORTA_MASK;
 
 	PORTA_PCR2 = 0x0200;
@@ -70,7 +68,7 @@ int UART_configure(void)
 	NVIC_ClearPendingIRQ(UART0_IRQn);
 	NVIC_EnableIRQ(UART0_IRQn);
 	NVIC_SetPriority(UART0_IRQn, 2);
-
+	UART0_C2 = UART0_C2_RE_MASK | UART0_C2_TE_MASK | UART0_C2_RIE_MASK;
 }
 
 CB_status add_to_buffer(uint8_t *str_ptr)
