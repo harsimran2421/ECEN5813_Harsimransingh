@@ -8,17 +8,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "circbuf.h"
-CB_status CB_init(CB_t **cbuf,uint8_t  length)
+CB_status CB_init(CB_t *cbuf,uint8_t  length)
 {
-	CB_t *temp = *cbuf;
-	temp->buffer = NULL;
-	temp->buffer = malloc(sizeof(uint8_t)*length);
-	temp->length = length;
-	temp->head = temp->buffer;
-	temp->tail = temp->buffer;
-	temp->count = 0;
-	temp->peek = 0;
-	*cbuf=temp;
+	//CB_t temp = cbuf;
+	cbuf->buffer = NULL;
+	cbuf->buffer = malloc(sizeof(uint8_t)*length);
+	cbuf->length = length;
+	cbuf->head = cbuf->buffer;
+	cbuf->tail = cbuf->buffer;
+	cbuf->count = 0;
+	cbuf->peek = 0;
+	//cbuf=temp;
   return No_error;
 }
 

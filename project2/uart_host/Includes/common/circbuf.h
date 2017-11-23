@@ -31,7 +31,7 @@ CB_status CB_buffer_add_item(CB_t *cbuf, uint8_t val);
 
 void memcopy(uint8_t *tail, uint8_t val);
 
-CB_status CB_init(CB_t **cbuf,uint8_t  length);
+CB_status CB_init(CB_t *cbuf,uint8_t  length);
 
 CB_status CB_buffer_remove_item(CB_t *cbuf/*, uint8_t *value*/);
 

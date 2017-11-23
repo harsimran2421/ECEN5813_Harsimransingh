@@ -19,7 +19,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "uart.h"
+#ifdef FRDM
 #include <MKL25Z4.H>
+#endif
 #include "circbuf.h"
 
 #define MCGFLLCLK 0x04000000
@@ -32,14 +34,13 @@ CB_t *transbuf;
 CB_t *recbuf;
 
 uint8_t recflag = 0;
-
+#ifdef FRDM
 CB_t *create_buffer(CB_t *cbuf)
 {
 	cbuf = malloc(sizeof(CB_t));
 	CB_init(&cbuf,100);
 	return cbuf;
 }
-
 int UART_configure(void)
 {
 	/*Provide clock to UART0*/
@@ -70,7 +71,7 @@ int UART_configure(void)
 	NVIC_SetPriority(UART0_IRQn, 2);
 	UART0_C2 = UART0_C2_RE_MASK | UART0_C2_TE_MASK | UART0_C2_RIE_MASK;
 }
-
+#endif
 CB_status add_to_buffer(uint8_t *str_ptr)
 {
 	while(*(str_ptr) != '\0')				//checks for the null character
@@ -80,7 +81,7 @@ CB_status add_to_buffer(uint8_t *str_ptr)
 	}
 return No_error;							
 }
-
+#ifdef FRDM
 void UART_send(uint8_t *data)
 {
 	while(!(UART0->S1 & 0xC0))				
@@ -144,7 +145,7 @@ void UART0_IRQHandler(void)
 	__enable_irq();															//enable interrupt once process for previous interrupt is done
 }
 
-
+#endif
 
 
 

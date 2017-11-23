@@ -19,15 +19,15 @@ include sources.mk
 #Setting up of Default Platform
 PLATFORM = HOST
 KL25ZFLAG = OFF
-PROJECT1FLAG = project2
+PROJECT2FLAG = Project2
 #Common Compile Defines
-PROG = project2
+PROG = Project2
 TARGET = $(PROG).elf
 #Platform specific Compile Defines
 ifeq ($(PROJECT2-SW),OFF)
 	PROJECT2FLAG = OFF
 else
-	PROJECT2FLAG = project2
+	PROJECT2FLAG = Project2
 endif
 
 ifeq ($(DEBUG),ON)
@@ -78,7 +78,7 @@ DEP = $(SRCS:.c=.dep)
 
 #object files
 %.o : %.c 
-	$(CC) $(CPPFLAGS) -c -D$(PROJECT1FLAG) -D$(DEBUGFLAG) -D$(KL25ZFLAG) $^ $(CFLAGS) -o $@
+	$(CC) $(CPPFLAGS) -c -D$(PROJECT2FLAG) -DHOST -D$(DEBUGFLAG) -D$(KL25ZFLAG) $^ $(CFLAGS) -o $@
 
 #dependency files
 %.dep : %.c
@@ -100,22 +100,6 @@ $(TARGET): $(OBJS) $(SRC_O) $(SRC_D) $(DEP)
 compile-all: $(OBJS) $(SRC_O)
 	$(CC) $(CPPFLAGS) $^ $(CFLAGS) $(LDFLAGS)
 
-static-link: main.o libproject1.a
-	$(CC) $(CPPFLAGS) -o $@ main.o libproject1.a
-
-#This is to create archive static library
-build-lib: memory.o conversion.o project1.o
-	ar rcs libproject1.a $^
-
-#This is used to invoke linker without gcc
-project1: $(OBJS)
-	$(LD) $(CPPFLAGS) startup_MKL25Z4.s -o main.o project1.o memory.o conversion.o debug.o system_MKL25Z4.o $(LINKF) -N --entry main
-#This is used to create executeable without invoking gcc for host
-direct-link: $(OBJS) 
-	ld $(CPPFLAGS) -o direct-linkk.elf $^ -lc -N --entry main
-
-upload:
-	scp project2.elf root@192.168.7.2:~/Hw-3
 #This is used to remove object,dependency,executable,map,preprocessor,.s and .exe files
 clean:
 	rm -f $(OBJS) $(DEP) $(TARGET) $(PROG).map $(SRC_O) $(SRC_D) *.i *.s *.exe

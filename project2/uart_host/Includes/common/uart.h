@@ -25,7 +25,9 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#ifdef FRDM
 #include "MKL25Z4.h"
+#endif
 #include "circbuf.h"
 /*#if baud==115200
 	#define uart_reg->UART0_BDL 0x17

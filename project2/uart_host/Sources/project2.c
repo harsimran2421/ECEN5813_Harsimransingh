@@ -1,9 +1,12 @@
 #include <stdint.h>
 #include<stdlib.h>
 #include "circbuf.h"
-#include "uart.h"
+#ifdef FRDM
+  #include "uart.h"
+#endif
 #include "conversion.h"
-
+#include "project2.h"
+#include <stdio.h>
 extern CB_t *recbuf;
 extern uint8_t recflag;
 uint32_t alpha_Count = 0;
@@ -12,12 +15,12 @@ uint32_t punc_Count = 0;
 uint32_t misc_Count = 0;
 uint32_t rec_DataCount = 0;
 
-void project2()
+CB_status project2()
 {
 	uint8_t rec_data=0;
 	if(recbuf->count == 0)
 	{
-		return Empty;
+		return 0;
 	}
 	else
 	{
@@ -42,9 +45,10 @@ void project2()
 		misc_Count++;
 		rec_DataCount++;
 		}
+    recflag++;
 		}
 		CB_buffer_remove_item(recbuf);
-	if(rec_DataCount == 10 || rec_data == 13)
+	if(rec_DataCount == 5 || rec_data == 13)
 	{
 #ifdef FRDM
 		uint8_t *data = NULL;
@@ -71,7 +75,7 @@ printf("No of Alphabets are:%d\n",alpha_Count);
 printf("No of Numbers are:%d\n",num_Count);
 #endif
 
-#ifdef
+#ifdef FRDM
 		uint8_t Punstring[]= "\n\rNo of puncuations:";
     UART_send_n(Punstring, 22);
 		length=my_itoa(punc_Count, data, 10);
@@ -96,9 +100,10 @@ printf("No of Miscelenous items are:%d\n",misc_Count);
   #ifdef FRDM
 		free(data);
   #endif
+recflag=0;
+  }
+    return No_error;
 	}
-	recflag = 0;
-}
 
 
 
