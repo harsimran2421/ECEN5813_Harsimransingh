@@ -5,7 +5,7 @@
 
 /*Compile time switch for FRDM*/
 #ifdef FRDM
-#include "dma.h"
+#include "DMA.h"
 #include "MKL25Z4.h"
 
 #define DMA_ENABLE_TRANSFER (0x80)
@@ -311,7 +311,7 @@ void memzero_dma_2_byte(uint8_t *src,uint32_t length)
   NVIC_EnableIRQ(DMA0_IRQn);
 }
 
-void memzero_dma_1_byte(uint8_t *src,uint32_t length)
+void memzero_dma_4_byte(uint8_t *src,uint32_t length)
 {
   uint16_t set=0;
 /*Disable DMA transfer until configuration is completed*/
@@ -331,3 +331,5 @@ void memzero_dma_1_byte(uint8_t *src,uint32_t length)
 /*Indicate DMA transfer is complete*/
   NVIC_EnableIRQ(DMA0_IRQn);
 }
+
+#endif

@@ -13,7 +13,6 @@
  * *               -memzero_dma_4_Byte()
  * *
  * ***************************************************/
-#include "circbuff.h"
 #ifndef DMA_H_
 #define DMA_H_
 
