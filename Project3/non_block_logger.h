@@ -1,13 +1,3 @@
-/************************************************
- * * Authors : Vishal Vishnani, Virag Gada
- * * Date : 04/16/2017
- * *
- * * File : binary_logger.h
- * * Description : Header file for binary logger
- * *               -create_log_item()
- * *               -log_item()
- * *               -destroy_log_item()
- * *************************************************/
 
 #ifndef NON_BLOCK_LOGGER_H_
 #define NON_BLOCK_LOGGER_H_
