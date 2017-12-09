@@ -39,4 +39,3 @@ void profiler_run()
   printf("\n%d\n",elapsed_time);
 #endif
 }
-

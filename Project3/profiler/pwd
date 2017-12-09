@@ -23,7 +23,8 @@ void profiler_run()
   uint32_t end = SysTick -> VAL;
   uint32_t elapsed_count=((SysTick->LOAD)-end);
   float systick_value=(float)elapsed_count*(float)((1)/(float)(DEFAULT_SYSTEM_CLOCK));
-  FRDM_log_integer(elapsed_time,3);
+  uint8_t a=0;
+  FRDM_log_data(dst,10);
   //my_itoa((uint32_t)systick_value, (int8_t *)&systick_value,10);
   //FRDM_log_data((uint8_t*)&(systick_value),1);
 #endif
@@ -35,8 +36,11 @@ void profiler_run()
   double end_us=gettimeofday(&end,NULL);
   printf("\n%ld\n",start.tv_usec);
   printf("\n%ld\n",end.tv_usec);
-  uint32_t elapsed_time=end_us-start_us;
-  printf("\n%d\n",elapsed_time);
+  uint32_t a=end_us-start_us;
+  uint32_t i;
+for(i=0;i<1000;i++)
+{
+printf("%c",*(dst+i));
+}
 #endif
 }
-
