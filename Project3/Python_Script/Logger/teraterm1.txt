@@ -1,0 +1,38 @@
+ Timestamp:Thu Jan  1 01:02:03 1970  Log ID:11
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:11
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:1
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:3
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:4
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:2
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:5
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload:Testing log_data
+1234
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload:Testing log_string
+This is a string
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload:Testing log_integer
+1234harsimrans
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload: Testing CONFIG R/W
+CONFIG Value: 
+
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload: Testing STATUS R
+STATUS Value: 
+
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload: Testing RF SETUP R/W
+RF SETUP Value: 
+
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload: Testing RF CH R/W
+RF CH Value: 
+
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:7 Payload: Testing FIFO STATUS R
+ FIFO STATUS Value: 
+
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:11
+No of Alphabets:0
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:12 Payload:0
+No of Numbers:10
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:13 Payload:10
+No of puncuations:0
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:14 Payload:0
+No of Miscellaneous characters:0
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:15 Payload:01231231231
+ Timestamp:Thu Jan  1 00:00:00 1970  Log ID:16
