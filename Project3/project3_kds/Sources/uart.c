@@ -119,16 +119,14 @@ void UART0_IRQHandler(void) {
 	 * For TX interrupt we take the data from TX buffer and
 	 * sent it to UART to transmit*/
 	if ((UART0_C2 & UART0_C2_TIE_MASK) != 0) {
-		uint8_t data;
 		uint16_t i;
 		while (transbuf->count) {
+		uint8_t val=CB_buffer_remove_items(transbuf, 1);
 		#ifdef EXTRA_CREDIT
-			uart_memmove_dma((transbuf->tail),&(UART0_D),(uint32_t) 1);
+			uart_memmove_dma(&val,&(UART0_D),(uint32_t) 1);
 		#else
-			data = *(transbuf->head);
-			UART_send(data);
+			UART_send(val);
 		#endif
-			CB_buffer_remove_items(transbuf, 1);
 		}
 		log_flush();
 		UART0_C2 &= ~UART0_C2_TIE_MASK;

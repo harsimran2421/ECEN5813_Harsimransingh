@@ -343,4 +343,88 @@ void DMA0_IRQHandler()
 	DMA_DSR_BCR0=DMA_DSR_BCR_DONE_MASK;
 	__enable_irq();
 }
+
+void uart_memmove_dma(uint8_t * src, uint8_t * dst, uint32_t length){
+
+	/*overlapping condition*/
+	if((src<dst) && (dst-length)<src){
+
+		uint8_t temp[length];
+
+		/*assign source address*/
+		DMA_SAR0=(uint32_t)src;
+
+		/*assign destination address*/
+		DMA_DAR0=(uint32_t)&temp;
+
+		/*Do not start transfer until configuration is complete, determine source size,
+		*source increment, destination size, destination increment, enable peripheral request*/
+		DMA_DCR0=UART_DMA_DCR0;
+
+		/*load the length value*/
+		DMA_DSR_BCR0=length;
+
+		/*select channel source slot*/
+		DMAMUX0_CHCFG0|=DMA_CHANNEL0;
+
+		/*enable DMA transfer*/
+		DMAMUX0_CHCFG0|=DMA_ENABLE_TRANSFER;
+
+		/*enable start bit*/
+		DMA_DCR0|=DMA_START_BIT_ENABLE;
+
+		/*assign source address*/
+		DMA_SAR0=(uint32_t)&temp;
+
+		/*assign destination address*/
+		DMA_DAR0=(uint32_t)dst;
+
+		/*Do not start transfer until configuration is complete, determine source size,
+		*source increment, destination size, destination increment*/
+		DMA_DCR0=DMA_DCR0_UART;
+
+		/*load the length value*/
+		DMA_DSR_BCR0=length;
+
+		/*select channel source slot*/
+		DMAMUX0_CHCFG0|=DMA_CHANNEL0;
+
+		/*enable DMA transfer*/
+		DMAMUX0_CHCFG0|=DMA_ENABLE_TRANSFER;
+
+		/*enable start bit*/
+		DMA_DCR0|=DMA_START_BIT_ENABLE;
+
+		/*enable interrupt for dma*/
+		NVIC_EnableIRQ(DMA0_IRQn);
+
+	}
+	else{
+
+		/*assign source address*/
+		DMA_SAR0=(uint32_t)src;
+
+		/*assign destination address*/
+		DMA_DAR0=(uint32_t)dst;
+
+		/*Do not start transfer until configuration is complete, determine source size,
+		 *source increment, destination size, destination increment*/
+		DMA_DCR0=UART_DMA_DCR0;
+
+		/*load the length value*/
+		DMA_DSR_BCR0=length;
+
+		/*select channel source slot*/
+		DMAMUX0_CHCFG0|=DMA_CHANNEL0;
+
+		/*enable DMA transfer*/
+		DMAMUX0_CHCFG0|=DMA_ENABLE_TRANSFER;
+
+		/*enable start bit*/
+		DMA_DCR0|=DMA_START_BIT_ENABLE;
+
+		/*enable interrupt for dma*/
+		 NVIC_EnableIRQ(DMA0_IRQn);
+	}
+}
 #endif
