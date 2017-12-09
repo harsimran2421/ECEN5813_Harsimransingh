@@ -1,10 +1,3 @@
-/*
- * memory.h
- *
- *  Created on: Oct 28, 2017
- *      Author: harsi
- */
-
 #ifndef INCLUDES_MEMORY_H_
 #define INCLUDES_MEMORY_H_
 /********************************************

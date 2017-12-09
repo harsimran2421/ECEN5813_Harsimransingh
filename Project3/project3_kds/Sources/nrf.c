@@ -1,6 +1,6 @@
 /*************************************************************************
 * Authors : Harsimransingh Bindra, Smitesh Modak
-* Date : 12/1/2017
+* Date : 12/7/2017
 *
 * File : nrf.c
 * Description : Source file for nrf functions

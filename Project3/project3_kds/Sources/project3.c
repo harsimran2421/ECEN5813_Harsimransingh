@@ -162,21 +162,22 @@ if(state == NULL_POINTER)
 	FRDM_log_string("\n\r");
 
 	//Write and Read to NRF TX ADDR register
-	/*#ifdef LOG_ON
+	#ifdef LOG_ON
 		uint8_t payload_string33[22] = " Testing TX ADDR R/W\n\r";
 		system_log->logID = INFO;
 		system_log->LogLength = 22;
 		system_log->Payload = payload_string33;
 		log_item(system_log);
 	#endif
-
-	nrf_write_TX_ADDR(tx_addr_values);
-	txaddr_array = nrf_read_TX_ADDR();
+    
+  uint8_t tx_values[5] = { 10, 20, 30, 40, 50};
+	nrf_write_TX_ADDR(tx_values);
+	tx_array = nrf_read_TX_ADDR();
 
 	for(uint8_t i=0;i<5;i++){
-		FRDM_log_integer((uint32_t)txaddr_array[i],3);
+		FRDM_log_integer((uint32_t)tx_array[i],3);
 		FRDM_log_string(" ");
-	}*/
+	}
 
 	//Write and Read to NRF RF SETUP register
 	#ifdef LOG_ON
