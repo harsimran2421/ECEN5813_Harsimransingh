@@ -13,11 +13,15 @@
  * *    CB_status CB_destroy(CB_t *cbuf)
  * *    
  * ***************************************************************************/
-#ifndef CIRCULAR_H_
-#define CIRCULAR_H_
+
 #include <stdint.h>
+#ifdef FRDM
 #define START_CRITICAL() __disable_irq()
 #define END_CRITICAL() __enable_irq()
+#else
+#define START_CRITICAL()
+#define END_CRITICAL()
+#endif
 
 /*Enum used for returning the buffer state*/
 typedef enum CB_Enum_t{
@@ -48,10 +52,6 @@ typedef struct circular
 CB_t *transbuf;
 CB_t *recbuf;
 uint8_t recflag;
-uint16_t rec_DataCount;
-uint8_t rec_data;
-uint8_t heart_off;
-uint8_t log_off;
 /******************************************************************************
  * * This function is used to add elements to circular buffer
  * * The return value can be full or available
@@ -59,6 +59,26 @@ uint8_t log_off;
  * * uint8_t val - data to be stored on buffer
  *********************************************************************************/
 CB_status CB_buffer_add_item(CB_t *cbuf, uint8_t val);
+
+/******************************************************************************
+ * * This function is used to check if circular buffer is full
+ * * The return value can be full or available depending on count value
+ * * CircBuff *CircBuffTR - Pointer which points to circular buffer
+ * *******************************************************************************/
+__attribute__((always_inline)) static inline CB_status inline_CB_is_full(CB_t *cbuf){
+    ((cbuf->count) == (cbuf->length))?(cbuf->status=Full):(cbuf->status=Available);
+    return cbuf->status;
+}
+
+/*******************************************************************************
+ * * This function is used to check if circular buffer is empty
+ * * The return value can be empty or available depending on count value
+ * * CircBuff CircBuffTR - Pointer which points to circular buffer
+ * *******************************************************************************/
+__attribute__((always_inline)) static inline CB_status inline_CB_is_empty(CB_t *cbuf){
+    ((cbuf->count) == 0)?(cbuf->status=Empty):(cbuf->status=Available);
+    return cbuf->status;
+}
 
 /******************************************************************************
  * * This function is used to add elements to circular buffer
@@ -121,4 +141,3 @@ CB_status CB_peek(CB_t *cbuf, uint8_t position);
  * ******************************************************************************/
 CB_status CB_destroy(CB_t *cbuf);
 
-#endif

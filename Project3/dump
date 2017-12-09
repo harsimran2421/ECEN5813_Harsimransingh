@@ -372,16 +372,14 @@ void UART0_IRQHandler(void) {
 	 * For TX interrupt we take the data from TX buffer and
 	 * sent it to UART to transmit*/
 	if ((UART0_C2 & UART0_C2_TIE_MASK) != 0) {
-		uint8_t data;
 		uint16_t i;
 		while (transbuf->count) {
+		uint8_t val=CB_buffer_remove_items(transbuf, 1);
 		#ifdef EXTRA_CREDIT
-			uart_memmove_dma((transbuf->tail),&(UART0_D),(uint32_t) 1);
+			uart_memmove_dma(&val,&(UART0_D),(uint32_t) 1);
 		#else
-			data = *(transbuf->head);
-			UART_send(data);
+			UART_send(val);
 		#endif
-			CB_buffer_remove_items(transbuf, 1);
 		}
 		log_flush();
 		UART0_C2 &= ~UART0_C2_TIE_MASK;
@@ -408,7 +406,7 @@ void UART0_IRQHandler(void) {
 
 /*************************************************************************
 * Authors : Harsimransingh Bindra, Smitesh Modak
-* Date : 12/1/2017
+* Date : 12/7/2017
 *
 * File : nrf.c
 * Description : Source file for nrf functions
@@ -1643,6 +1641,90 @@ void DMA0_IRQHandler()
 	DMA_DSR_BCR0=DMA_DSR_BCR_DONE_MASK;
 	__enable_irq();
 }
+
+void uart_memmove_dma(uint8_t * src, uint8_t * dst, uint32_t length){
+
+	/*overlapping condition*/
+	if((src<dst) && (dst-length)<src){
+
+		uint8_t temp[length];
+
+		/*assign source address*/
+		DMA_SAR0=(uint32_t)src;
+
+		/*assign destination address*/
+		DMA_DAR0=(uint32_t)&temp;
+
+		/*Do not start transfer until configuration is complete, determine source size,
+		*source increment, destination size, destination increment, enable peripheral request*/
+		DMA_DCR0=UART_DMA_DCR0;
+
+		/*load the length value*/
+		DMA_DSR_BCR0=length;
+
+		/*select channel source slot*/
+		DMAMUX0_CHCFG0|=DMA_CHANNEL0;
+
+		/*enable DMA transfer*/
+		DMAMUX0_CHCFG0|=DMA_ENABLE_TRANSFER;
+
+		/*enable start bit*/
+		DMA_DCR0|=DMA_START_BIT_ENABLE;
+
+		/*assign source address*/
+		DMA_SAR0=(uint32_t)&temp;
+
+		/*assign destination address*/
+		DMA_DAR0=(uint32_t)dst;
+
+		/*Do not start transfer until configuration is complete, determine source size,
+		*source increment, destination size, destination increment*/
+		DMA_DCR0=DMA_DCR0_UART;
+
+		/*load the length value*/
+		DMA_DSR_BCR0=length;
+
+		/*select channel source slot*/
+		DMAMUX0_CHCFG0|=DMA_CHANNEL0;
+
+		/*enable DMA transfer*/
+		DMAMUX0_CHCFG0|=DMA_ENABLE_TRANSFER;
+
+		/*enable start bit*/
+		DMA_DCR0|=DMA_START_BIT_ENABLE;
+
+		/*enable interrupt for dma*/
+		NVIC_EnableIRQ(DMA0_IRQn);
+
+	}
+	else{
+
+		/*assign source address*/
+		DMA_SAR0=(uint32_t)src;
+
+		/*assign destination address*/
+		DMA_DAR0=(uint32_t)dst;
+
+		/*Do not start transfer until configuration is complete, determine source size,
+		 *source increment, destination size, destination increment*/
+		DMA_DCR0=UART_DMA_DCR0;
+
+		/*load the length value*/
+		DMA_DSR_BCR0=length;
+
+		/*select channel source slot*/
+		DMAMUX0_CHCFG0|=DMA_CHANNEL0;
+
+		/*enable DMA transfer*/
+		DMAMUX0_CHCFG0|=DMA_ENABLE_TRANSFER;
+
+		/*enable start bit*/
+		DMA_DCR0|=DMA_START_BIT_ENABLE;
+
+		/*enable interrupt for dma*/
+		 NVIC_EnableIRQ(DMA0_IRQn);
+	}
+}
 #endif
 #include <stdint.h>
 #include<stdlib.h>
@@ -2113,21 +2195,22 @@ if(state == NULL_POINTER)
 	FRDM_log_string("\n\r");
 
 	//Write and Read to NRF TX ADDR register
-	/*#ifdef LOG_ON
+	#ifdef LOG_ON
 		uint8_t payload_string33[22] = " Testing TX ADDR R/W\n\r";
 		system_log->logID = INFO;
 		system_log->LogLength = 22;
 		system_log->Payload = payload_string33;
 		log_item(system_log);
 	#endif
-
-	nrf_write_TX_ADDR(tx_addr_values);
-	txaddr_array = nrf_read_TX_ADDR();
+    
+  uint8_t tx_values[5] = { 10, 20, 30, 40, 50};
+	nrf_write_TX_ADDR(tx_values);
+	tx_array = nrf_read_TX_ADDR();
 
 	for(uint8_t i=0;i<5;i++){
-		FRDM_log_integer((uint32_t)txaddr_array[i],3);
+		FRDM_log_integer((uint32_t)tx_array[i],3);
 		FRDM_log_string(" ");
-	}*/
+	}
 
 	//Write and Read to NRF RF SETUP register
 	#ifdef LOG_ON
@@ -5248,10 +5331,10 @@ __STATIC_INLINE int32_t ITM_CheckChar (void) {
 #endif /* __CMSIS_GENERIC */
 
 /*************************************************************************
-* Authors : Vishal Vishnani, Virag Gada
-* Date : 04/12/2017
+* Authors : Harsimransingh, Smitesh Modak
+* Date : 12/05/2017
 *
-* File : nordic.h
+* File : nrf.h
 * Description : Header file for nordic functions
 *            	-void nrf_read_register(uint8_t reg)
 *            	-void nrf_write_register(uint8_t reg, uint8_t value)
@@ -5278,7 +5361,6 @@ __STATIC_INLINE int32_t ITM_CheckChar (void) {
 #define RF_CHANNEL_VALUE 		(0x12) //Set RF channel frequency
 #define RF_SETUP_VALUE 			(0x07) //Set 0 dBm RF Tx output, 1 Mbps data rate and LNA gain
 
-/*NRF2401 SPI command defines*/
 #define R_REGISTER				(0x00)
 #define W_REGISTER				(0x20)
 #define R_RX_PAYLOAD			(0x61)
@@ -5292,43 +5374,42 @@ __STATIC_INLINE int32_t ITM_CheckChar (void) {
 #define WR__TX_PAYLOAD_NOACK	(0xB0)
 #define NOP						(0xFF)
 
-/*NRF2401 Register map*/
 #define CONFIG					(0x00)
 #define EN_AA					(0x01)
 #define EN_RXADDR				(0x02)
 #define SETUP_AW				(0x03)
+#define RF_SETUP				(0x06)
 #define SETUP_RETR				(0x04)
 #define RF_CH					(0x05)
-#define RF_SETUP				(0x06)
 #define NRF_STATUS				(0x07)
 #define OBSERVE_TX				(0x08)
+#define RX_ADDR_P3				(0x0D)
 #define CD						(0x09)
 #define RX_ADDR_P0				(0x0A)
 #define RX_ADDR_P1				(0x0B)
 #define RX_ADDR_P2				(0x0C)
-#define RX_ADDR_P3				(0x0D)
 #define RX_ADDR_P4				(0x0E)
+#define RX_PW_P0				(0x11)
 #define RX_ADDR_P5				(0x0F)
 #define TX_ADDR					(0x10)
-#define RX_PW_P0				(0x11)
 #define RX_PW_P1				(0x12)
+#define RX_PW_P5				(0x16)
 #define RX_PW_P2				(0x13)
 #define RX_PW_P3				(0x14)
 #define RX_PW_P4				(0x15)
-#define RX_PW_P5				(0x16)
 #define FIFO_STATUS				(0x17)
 #define DYNPD					(0x1C)
 #define FEATURE					(0x1D)
 
 /*CONFIG register bit definitions*/
 #define CONFIG_RESERVED			(0x80)
+#define	CONFIG_CRCO				(0x04)
 #define	CONFIG_MASK_RX_DR		(0x40)
 #define	CONFIG_MASK_TX_DS		(0x20)
+#define	CONFIG_PRIM_RX			(0x01)
 #define	CONFIG_MASK_MAX_RT		(0x10)
 #define	CONFIG_EN_CRC			(0x08)
-#define	CONFIG_CRCO				(0x04)
 #define	CONFIG_PWR_UP			(0x02)
-#define	CONFIG_PRIM_RX			(0x01)
 
 /*Defining Global Variables*/
 uint8_t TX_Addr_Values[5];
@@ -17483,19 +17564,6 @@ typedef struct {
 #endif  /* #if !defined(MKL25Z4_H_) */
 
 /* MKL25Z4.h, eof. */
-/*************************************************************************
- * * Authors : Vishal Vishnani, Virag Gada
- * * Date : 04/10/2017
- * *
- * * File : spi.h
- * * Description : Header file for SPI functions
- * *              -void SPI_init()
- * *              -void SPI_read_byte(uint8_t * byte)
- * *              -uint8_t SPI_write_byte(uint8_t byte)
- * *              -void SPI_send_packet(uint8_t * p, size_t length)
- * *              -void SPI_flush()
- * ***************************************************************************/
-
 #ifndef SPI_H_
 #define SPI_H_
 
@@ -17575,13 +17643,6 @@ void spi_flush();
 void profiler_run();
 
 #endif /* INCLUDES_PROFILER_H_ */
-/*
- * memory.h
- *
- *  Created on: Oct 28, 2017
- *      Author: harsi
- */
-
 #ifndef INCLUDES_MEMORY_H_
 #define INCLUDES_MEMORY_H_
 /********************************************
@@ -20086,19 +20147,6 @@ void SystemCoreClockUpdate (void);
 #endif
 
 #endif  /* #if !defined(SYSTEM_MKL25Z4_H_) */
-/*
- * FRDM.h
- *
- *  Created on: Nov 25, 2017
- *      Author: harsi
- */
-
-#ifndef INCLUDES_FRDM_H_
-#define INCLUDES_FRDM_H_
-//#define FRDM
-#define LOG_ON
-
-#endif /* INCLUDES_FRDM_H_ */
 /*************************************************************************
  * * Authors : Harsimransingh Bindra, Smitesh Modak
  * * Date : 10/28/2017
